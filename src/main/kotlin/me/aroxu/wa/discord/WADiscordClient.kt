@@ -19,7 +19,7 @@ class WADiscordClient {
         var isReady: Boolean = false
     }
 
-    suspend fun startBot(plugin: JavaPlugin) {
+    private suspend fun startBot(plugin: JavaPlugin) {
         plugin.server.scheduler.runTaskAsynchronously(plugin) { _ ->
             runBlocking {
                 launch {
@@ -58,6 +58,7 @@ class WADiscordClient {
 
     private suspend fun start(token: String) {
         client = Kord(token)
+        WADiscordMessageHandler.onMessage()
         client.login()
     }
 
@@ -91,14 +92,12 @@ class WADiscordClient {
                     plugin.logger.warning(e.message)
                 }
             }
-
         }
     }
 
     fun restartBot(plugin: JavaPlugin) {
         runBlocking {
             launch {
-                println(plugin.server.scheduler.activeWorkers)
                 try {
                     shutdownBot(plugin, true)
                 } catch (e: Exception) {
@@ -125,7 +124,6 @@ class WADiscordClient {
                     }
                 }
             }
-
         }
     }
 }
