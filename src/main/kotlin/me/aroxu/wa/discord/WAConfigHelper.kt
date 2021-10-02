@@ -65,7 +65,7 @@ object WAConfigHelper {
         val destinationFile = File(plugin.dataFolder, "admins.json")
         if (!destinationFile.exists()) {
             plugin.logger.info("admins.json not found! Generating file...")
-            saveAdminsToFile("{\"admins\":\"[]\"}")
+            saveAdminsToFile("{\"admins\":[]}")
         }
         return destinationFile.readText()
     }

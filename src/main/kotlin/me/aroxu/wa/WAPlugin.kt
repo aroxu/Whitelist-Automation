@@ -24,6 +24,10 @@ class WAPlugin : JavaPlugin() {
             }
         }
 
-        WADiscordClient().startBot(plugin)
+        WADiscordClient().restartBot(plugin)
+    }
+
+    override fun onDisable() {
+        WADiscordClient().shutdownBot(plugin, false)
     }
 }

@@ -8,7 +8,6 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.Sound.sound
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.TextColor
-import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.plugin.java.JavaPlugin
 
 
@@ -17,9 +16,10 @@ class WADiscordClient {
         lateinit var client: Kord
         var token: String = WAConfigHelper.getToken()
         var admins: List<String> = WAConfigHelper.getAdmins()
+        var isReady: Boolean = false
     }
 
-    fun startBot(plugin: JavaPlugin) {
+    suspend fun startBot(plugin: JavaPlugin) {
         plugin.server.scheduler.runTaskAsynchronously(plugin) { _ ->
             runBlocking {
                 launch {
@@ -30,20 +30,25 @@ class WADiscordClient {
                         if (e.message!!.contains("token") && e.message!!.contains("valid")) {
                             plugin.logger.warning("Discord bot token is not valid. Try to update your Discord bot token using '/wa token YOUR_DISCORD_BOT_TOKEN_HERE'")
                         }
-                        plugin.server.operators.forEach {
-                            it.player!!.playSound(
-                                sound(
-                                    Key.key("block.note_block.bass"),
-                                    Sound.Source.AMBIENT,
-                                    10.0f,
-                                    0.1f
-                                )
-                            )
-                            it.player!!.sendMessage(
-                                text("[WhitelistAutomation] WARNING: Discord bot token is not valid. Try to update your Discord bot token using '/wa token YOUR_DISCORD_BOT_TOKEN_HERE'")
-                                    .color(TextColor.color(0xFFA500))
-                                    .decorate(TextDecoration.BOLD)
-                            )
+                        if (plugin.server.onlinePlayers.isNotEmpty()) {
+                            plugin.server.onlinePlayers.forEach {
+                                if (it.isOp) {
+                                    it.player!!.playSound(
+                                        sound(
+                                            Key.key("block.note_block.bass"),
+                                            Sound.Source.AMBIENT,
+                                            10.0f,
+                                            0.1f
+                                        )
+                                    )
+                                    it.player!!.sendMessage(
+                                        text("[WhitelistAutomation] WARNING: Discord bot token is not valid. Try to update your Discord bot token using '/wa token YOUR_DISCORD_BOT_TOKEN_HERE'")
+                                            .color(
+                                                TextColor.color(0xFFA500)
+                                            )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -56,33 +61,71 @@ class WADiscordClient {
         client.login()
     }
 
-    fun shutdownBot(plugin: JavaPlugin) {
-        plugin.server.scheduler.runTaskAsynchronously(plugin) { _ ->
-            runBlocking {
-                launch {
-                    try {
-                        client.shutdown()
-                    } catch (e: Exception) {
-                        plugin.logger.warning(e.message)
+    fun shutdownBot(plugin: JavaPlugin, isRestarting: Boolean) {
+        runBlocking {
+            launch {
+                try {
+                    client.shutdown()
+                    isReady = false
+                    if (plugin.server.onlinePlayers.isNotEmpty() && !isRestarting) {
+                        plugin.server.onlinePlayers.forEach {
+                            if (it.isOp) {
+                                it.player!!.playSound(
+                                    sound(
+                                        Key.key("block.note_block.pling"),
+                                        Sound.Source.AMBIENT,
+                                        10.0f,
+                                        2.0f
+                                    )
+                                )
+                                it.player!!.sendMessage(
+                                    text("[WhitelistAutomation] SUCCESS: Bot shutdown complete.")
+                                        .color(
+                                            TextColor.color(0x00FF00)
+                                        )
+                                )
+                            }
+                        }
                     }
+                } catch (e: Exception) {
+                    plugin.logger.warning(e.message)
                 }
             }
+
         }
     }
 
     fun restartBot(plugin: JavaPlugin) {
-        plugin.server.scheduler.runTaskAsynchronously(plugin) { _ ->
-            runBlocking {
-                launch {
-                    println(plugin.server.scheduler.activeWorkers)
-                    try {
-                        shutdownBot(plugin)
-                    } catch (e: Exception) {
-                        plugin.logger.warning(e.message)
+        runBlocking {
+            launch {
+                println(plugin.server.scheduler.activeWorkers)
+                try {
+                    shutdownBot(plugin, true)
+                } catch (e: Exception) {
+                    plugin.logger.warning(e.message)
+                }
+                startBot(plugin)
+                isReady = true
+                if (plugin.server.onlinePlayers.isNotEmpty()) {
+                    plugin.server.onlinePlayers.forEach {
+                        if (it.isOp) {
+                            it.player!!.playSound(
+                                sound(
+                                    Key.key("block.note_block.pling"),
+                                    Sound.Source.AMBIENT,
+                                    10.0f,
+                                    2.0f
+                                )
+                            )
+                            it.player!!.sendMessage(
+                                text("[WhitelistAutomation] SUCCESS: Bot (re)start complete.")
+                                    .color(TextColor.color(0x00FF00))
+                            )
+                        }
                     }
-                    startBot(plugin)
                 }
             }
+
         }
     }
 }
