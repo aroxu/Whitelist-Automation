@@ -24,6 +24,6 @@ class WAPlugin : JavaPlugin() {
             }
         }
 
-        WADiscordClient.startBot( plugin)
+        WADiscordClient().startBot(plugin)
     }
 }
