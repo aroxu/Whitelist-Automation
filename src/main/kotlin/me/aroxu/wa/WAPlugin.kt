@@ -1,17 +1,17 @@
-package me.aroxu.projname
+package me.aroxu.wa
 
 import io.github.monun.kommand.kommand
-import me.aroxu.projname.ProjNameCommand.register
+import me.aroxu.wa.WACommand.register
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * @author aroxu
  */
 
-class ProjName : JavaPlugin() {
+class WAPlugin : JavaPlugin() {
     override fun onEnable() {
         kommand {
-            register("projname") {
+            register("wa") {
                 register(this)
             }
         }

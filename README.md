@@ -1,5 +1,5 @@
-# aroxu-plugin-template
-- This is a template of minecraft plugin, based on [PaperMC](https://papermc.io)
+# Whitelist Automation
+- This is a Whitelist Automation minecraft plugin, based on [PaperMC](https://papermc.io)
 ---
 ## Server Setup (Optional, Recommended for development)
 - [server-script](https://github.com/aroxu/server-script)

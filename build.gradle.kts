@@ -33,7 +33,7 @@ tasks {
     }
 
     register<Jar>("paperJar") {
-        archiveBaseName.set("ProjName")
+        archiveBaseName.set("Whitelist-Automation")
         from(sourceSets["main"].output)
 
         doLast {

@@ -1,5 +1,5 @@
-name: ProjName
-main: me.aroxu.projname.ProjNamePlugin
+name: WhitelistAutomation
+main: me.aroxu.wa.WAPlugin
 version: $version
 api-version: '1.17'
 

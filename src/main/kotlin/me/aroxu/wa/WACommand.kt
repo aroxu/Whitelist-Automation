@@ -1,4 +1,4 @@
-package me.aroxu.projname
+package me.aroxu.wa
 
 import io.github.monun.kommand.node.LiteralNode
 
@@ -6,10 +6,10 @@ import io.github.monun.kommand.node.LiteralNode
  * @author aroxu
  */
 
-object ProjNameCommand {
+object WACommand {
     fun register(builder: LiteralNode) {
         builder.apply {
-            then("about") { executes { sender.sendMessage("ProjName by aroxu.") } }
+            then("about") { executes { sender.sendMessage("Whitelist Automation by aroxu.") } }
         }
     }
 }
