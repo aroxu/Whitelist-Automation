@@ -111,9 +111,9 @@ class WADiscordClient {
                         )
                     )
                     it.player!!.sendMessage(
-                        text("[WhitelistAutomation] SUCCESS: Bot shutdown complete.")
+                        text("[WhitelistAutomation] INFO: Shutting down Bot...")
                             .color(
-                                TextColor.color(0x00FF00)
+                                TextColor.color(0x5977D3)
                             )
                     )
                 }
@@ -146,8 +146,10 @@ class WADiscordClient {
                         )
                     )
                     it.player!!.sendMessage(
-                        text("[WhitelistAutomation] SUCCESS: Bot (re)start complete.")
-                            .color(TextColor.color(0x00FF00))
+                        text("[WhitelistAutomation] INFO: (Re)starting Bot...")
+                            .color(
+                                TextColor.color(0x5977D3)
+                            )
                     )
                 }
             }
