@@ -10,4 +10,4 @@ libraries:
   - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2
   - org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2
   - io.github.monun:kommand:2.6.6
-  - dev.kord:kord-core:0.8.0-M5
+  - dev.kord:kord-core:0.8.0-M8

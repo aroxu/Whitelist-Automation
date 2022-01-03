@@ -11,6 +11,12 @@ data class Token(val token: String)
 @Serializable
 data class Admins(val admins: List<String>)
 
+@Serializable
+data class WhitelistRole(val whitelistRole: String)
+
+@Serializable
+data class ActiveGuild(val activateGuild: String)
+
 object WAConfigHelper {
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -42,6 +48,7 @@ object WAConfigHelper {
         return destinationFile.readText()
     }
 
+
     fun updateAdmins(admins: List<String>) {
         val string = json.encodeToString(Admins.serializer(), Admins(admins))
         saveAdminsToFile(string)
@@ -66,6 +73,64 @@ object WAConfigHelper {
         if (!destinationFile.exists()) {
             plugin.logger.info("admins.json not found! Generating file...")
             saveAdminsToFile("{\"admins\":[]}")
+        }
+        return destinationFile.readText()
+    }
+
+
+    fun updateWhitelistRole(role: String) {
+        val string = json.encodeToString(WhitelistRole.serializer(), WhitelistRole(role))
+        saveWhitelistRoleToFile(string)
+    }
+
+    fun getWhitelistRole(): String {
+        val jsonData = loadRoleFromFile()
+        return json.decodeFromString(WhitelistRole.serializer(), jsonData).whitelistRole
+    }
+
+    private fun saveWhitelistRoleToFile(jsonData: String) {
+        val destinationFile = File(plugin.dataFolder, "whitelistRole.json")
+        destinationFile.absoluteFile.parentFile.mkdirs()
+        if (!destinationFile.exists()) {
+            destinationFile.createNewFile()
+        }
+        destinationFile.writeText(jsonData)
+    }
+
+    private fun loadRoleFromFile(): String {
+        val destinationFile = File(plugin.dataFolder, "whitelistRole.json")
+        if (!destinationFile.exists()) {
+            plugin.logger.info("whitelistRole.json not found! Generating file...")
+            saveWhitelistRoleToFile("{\"whitelistRole\":\"\"}")
+        }
+        return destinationFile.readText()
+    }
+
+
+    fun updateActivateGuild(guild: String) {
+        val string = json.encodeToString(ActiveGuild.serializer(), ActiveGuild(guild))
+        saveActiveGuildToFile(string)
+    }
+
+    fun getActiveGuild(): String {
+        val jsonData = loadActiveGuildFromFile()
+        return json.decodeFromString(ActiveGuild.serializer(), jsonData).activateGuild
+    }
+
+    private fun saveActiveGuildToFile(jsonData: String) {
+        val destinationFile = File(plugin.dataFolder, "activateGuild.json")
+        destinationFile.absoluteFile.parentFile.mkdirs()
+        if (!destinationFile.exists()) {
+            destinationFile.createNewFile()
+        }
+        destinationFile.writeText(jsonData)
+    }
+
+    private fun loadActiveGuildFromFile(): String {
+        val destinationFile = File(plugin.dataFolder, "activateGuild.json")
+        if (!destinationFile.exists()) {
+            plugin.logger.info("activateGuild.json not found! Generating file...")
+            saveActiveGuildToFile("{\"activateGuild\":\"\"}")
         }
         return destinationFile.readText()
     }
